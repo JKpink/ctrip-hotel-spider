@@ -3,6 +3,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 import configs
 import re
+from playwright.sync_api import sync_playwright
 
 
 def get_original_image_url(thumb_url):
@@ -20,14 +21,13 @@ def get_original_image_url(thumb_url):
     if match:
         image_id = match.group(2)
         domain = thumb_url.split("://")[1].split("/")[0]
-        appendix = match.group(4)
         # 步骤3：构造原图URL
-        return f"https://{domain}/images/{image_id}.{appendix}"
+        return f"https://{domain}/images/{image_id}.{match.group(4)}"
     else:
         return thumb_url  # 如果不匹配，返回原始URL
 
 
-def fetchComments(hotelId, pageIndex):
+def fetchComments(hotelId, pageIndex, ratingLimit=4.5):
 
     url = "https://m.ctrip.com/restapi/soa2/33278/getHotelCommentList"
     headers = {
@@ -86,19 +86,22 @@ def fetchComments(hotelId, pageIndex):
     for item in data:
         content = item["content"]
         rating = item["rating"]
-        if "imageList" not in item:
-            continue
-        imageURLs = item["imageList"]
+        # if "imageList" not in item:
+        #     continue
+        # imageURLs = item["imageList"]
         createDate = item["createDate"]
 
-        for i in range(len(imageURLs)):
-            imageURLs[i] = get_original_image_url(imageURLs[i])
+        # for i in range(len(imageURLs)):
+        #     imageURLs[i] = get_original_image_url(imageURLs[i])
+
+        if rating < ratingLimit:
+            continue
 
         commentList.append(
             {
                 "content": content,
                 "rating": rating,
-                "imageURLs": imageURLs,
+                # "imageURLs": imageURLs,
                 "createDate": createDate,
             }
         )
@@ -106,11 +109,11 @@ def fetchComments(hotelId, pageIndex):
     return commentList
 
 
-def fetchHotelComments(hotelId, numPages=10):
+def fetchHotelComments(hotelId, numPages=10, ratingLimit=4.5):
     allComments = []
 
     def fetch_page(pageIndex):
-        return fetchComments(hotelId, pageIndex)
+        return fetchComments(hotelId, pageIndex, ratingLimit)
 
     with ThreadPoolExecutor(max_workers=configs.NUMWORKERS) as executor:
         results = executor.map(fetch_page, range(1, numPages + 1))
@@ -119,7 +122,8 @@ def fetchHotelComments(hotelId, numPages=10):
     return allComments
 
 
+# just for testing
 if __name__ == "__main__":
-    allComments = fetchHotelComments(131691214, numPages=50)
-    with open("test_HotelComments.json", "w", encoding="utf-8") as f:
+    allComments = fetchHotelComments(9532016, numPages=10)
+    with open("comments.json", "w", encoding="utf-8") as f:
         json.dump(allComments, f, ensure_ascii=False, indent=4)

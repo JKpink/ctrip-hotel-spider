@@ -8,7 +8,7 @@ from playwright.sync_api import sync_playwright
 
 def get_original_image_url(thumb_url):
     """通用携程图片URL转原图"""
-    if not thumb_url:
+    if not thumb_url or len(thumb_url) <= 0:
         return ""
 
     # 步骤1：移除协议和域名，提取路径部分
@@ -28,21 +28,12 @@ def get_original_image_url(thumb_url):
         return thumb_url  # 如果不匹配，返回原始URL
 
 
-"""
-browser = p.chromium.launch(
-    headless=False,
-    channel="chrome"
-)
-context = browser.new_context(
-    user_agent="你真实浏览器 UA"
-)
-
-"""
-
-
 # 使用playwright抓取酒店图片
 def get_hotel_list(hotel_id):
-    hotel_images = []
+    hotel_name = ""
+    hotel_images_list = []
+    user_images_list = []
+    hotel_top_images_list = []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, channel="chrome")
         context = browser.new_context(
@@ -52,38 +43,112 @@ def get_hotel_list(hotel_id):
         )
         page = context.new_page()
 
-        def handle_response(resp):
+        def handle_getHotelRoomPopInfoPCOnline(resp):
             if "getHotelRoomPopInfoPCOnline" in resp.url:
                 data = resp.json()
                 for room in data.get("data", {}).get("roomPopInfo", []):
                     tmp = data["data"]["roomPopInfo"][room]["pictureInfo"]
-                    hotel_images.extend(tmp)
+                    hotel_images_list.extend(tmp)
 
-        page.on("response", handle_response)
+        # https://m.ctrip.com/restapi/soa2/28820/ctgethotelalbum
+        def handle_gethotelalbum(resp):
+            if "ctgethotelalbum" in resp.url:
+                data = resp.json()
+                # 区分酒店上传跟用户上传，这是两个group,标签是json里都弄好的，不用自己训练分类网络
+                hotel_images = (
+                    data.get("data", {})
+                    .get("hotelImagePop", {})
+                    .get("hotelProvide", {})
+                    .get("imgTabs", [])
+                )
+                user_images = (
+                    data.get("data", {})
+                    .get("hotelImagePop", {})
+                    .get("userProvide", {})
+                    .get("imgTabs", [])
+                )
+                hotel_top_images = (
+                    data.get("data", {}).get("hotelTopImage", {}).get("imgUrlList", [])
+                )
 
+                # 酒店上传图片并分类
+                for img_tab in hotel_images:
+                    imgs_config_dict = {
+                        "categoryId": img_tab.get("categoryId", -1),
+                        "categoryName": img_tab.get("categoryName", "None"),
+                    }
+
+                    # 图片再imgURLList里
+                    sub_imgs_list = []
+                    for img_info in img_tab.get("imgUrlList", []):
+                        for sub_img_info in img_info.get("subImgUrlList", []):
+                            sub_imgs_list.append(
+                                {
+                                    "imgTitle": sub_img_info.get("imgTitle", ""),
+                                    "link": get_original_image_url(
+                                        sub_img_info.get("link", "")
+                                    ),
+                                }
+                            )
+                    imgs_config_dict["imgUrlList"] = sub_imgs_list
+                    hotel_images_list.append(imgs_config_dict)
+
+                # 用户上传图片并分类
+                for user_tab in user_images:
+                    imgs_config_dict = {
+                        "categoryId": user_tab.get("categoryId", -1),
+                        "categoryName": user_tab.get("categoryName", "None"),
+                    }
+
+                    # 图片再imgURLList里
+                    sub_imgs_list = []
+                    for img_info in user_tab.get("subUserAlbumCommentInfo", []):
+                        sub_imgs_list.append(
+                            {
+                                "link": get_original_image_url(
+                                    img_info.get("picture", "")
+                                ),
+                            }
+                        )
+                    imgs_config_dict["imgUrlList"] = sub_imgs_list
+                    user_images_list.append(imgs_config_dict)
+                # 酒店展示图片
+                for top_img in hotel_top_images:
+                    print()
+                    hotel_top_images_list.append(
+                        {
+                            "imgUrlList": {
+                                "link": get_original_image_url(
+                                    top_img.get("imgUrl", "")
+                                )
+                            }
+                        }
+                    )
+
+        page.on("response", handle_gethotelalbum)
         page.goto(f"https://hotels.ctrip.com/hotels/{hotel_id}.html")
 
         page.wait_for_timeout(500)
 
         browser.close()
 
-    return hotel_images
+    return hotel_images_list, user_images_list, hotel_top_images_list
 
 
 if __name__ == "__main__":
     hotel_id = 9532016
-    ret = get_hotel_list(hotel_id)
-    # 存进去,按照
-    """
-        pictureInfo: [
-            "xxx",
-            ...,
-            ]
-    """
-
+    # ret = get_hotel_list(hotel_id)
+    hotel_images, user_images, hotel_top_images = get_hotel_list(hotel_id)
     with open("test.json", "w", encoding="utf-8") as f:
-        # 写下访问的原URL
-        # f"https://hotels.ctrip.com/hotels/{hotel_id}.html"
         json.dump(
-            {"hotelId": hotel_id, "hotelURL": f"https://hotels.ctrip.com/hotels/{hotel_id}.html", "pictureInfo": ret}, f, ensure_ascii=False, indent=2
+            {
+                "hotelId": hotel_id,
+                "hotelURL": f"https://hotels.ctrip.com/hotels/{hotel_id}.html",
+                "hotel_images": hotel_images,
+                "user_images": user_images,
+                "hotel_top_images": hotel_top_images,
+            },
+            f,
+            ensure_ascii=False,
+            indent=2,
         )
