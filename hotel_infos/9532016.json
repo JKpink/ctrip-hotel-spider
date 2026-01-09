@@ -908,9 +908,6 @@
                     "link": "https://dimg04.c-ctrip.com/images/0236x12000ioerfuu3664.jpg"
                 },
                 {
-                    "link": "https://dimg04.c-ctrip.com/images/0200q2224tp1o720g4FF7.jpg"
-                },
-                {
                     "link": "https://dimg04.c-ctrip.com/images/0231k12000lmixlhhBD4B.png"
                 },
                 {
@@ -1284,25 +1281,39 @@
     ],
     "hotel_top_images": [
         {
-            "link": "https://dimg04.c-ctrip.com/images/1mc0u12000gxmnf27F446.jpg"
+            "imgUrlList": {
+                "link": "https://dimg04.c-ctrip.com/images/1mc0u12000gxmnf27F446.jpg"
+            }
         },
         {
-            "link": "https://images3.tripcdn.com/images/np-pic.png"
+            "imgUrlList": {
+                "link": "https://images3.tripcdn.com/images/np-pic.png"
+            }
         },
         {
-            "link": "https://images3.tripcdn.com/images/np-pic.png"
+            "imgUrlList": {
+                "link": "https://images3.tripcdn.com/images/np-pic.png"
+            }
         },
         {
-            "link": "https://images3.tripcdn.com/images/np-pic.png"
+            "imgUrlList": {
+                "link": "https://images3.tripcdn.com/images/np-pic.png"
+            }
         },
         {
-            "link": "https://images3.tripcdn.com/images/np-pic.png"
+            "imgUrlList": {
+                "link": "https://images3.tripcdn.com/images/np-pic.png"
+            }
         },
         {
-            "link": "https://images3.tripcdn.com/images/np-pic.png"
+            "imgUrlList": {
+                "link": "https://images3.tripcdn.com/images/np-pic.png"
+            }
         },
         {
-            "link": "https://images3.tripcdn.com/images/np-pic.png"
+            "imgUrlList": {
+                "link": "https://images3.tripcdn.com/images/np-pic.png"
+            }
         }
     ]
 }
