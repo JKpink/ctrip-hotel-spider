@@ -3,6 +3,16 @@
     "hotelURL": "https://hotels.ctrip.com/hotels/425174.html",
     "comments": [
         {
+            "content": "D服务很好，景色很好",
+            "rating": 5,
+            "createDate": "2026-01-10 14:47:33"
+        },
+        {
+            "content": "非常好，住起来很舒服，位置很好找。客房和前台服务也很好很及时～升级也很划算景色绝佳！下次来会再次入住",
+            "rating": 5,
+            "createDate": "2026-01-10 17:27:16"
+        },
+        {
             "content": "出门就是外滩，真是太幸福啦～服务好大厅氛围好～环境安静～床品舒服、酒店前台和工作人员都会热情的打招呼～这次入住体验非常好～下次来上海还来～",
             "rating": 5,
             "createDate": "2026-01-08 22:43:15"
@@ -31,6 +41,11 @@
             "content": "酒店很好D很好风景很好 卫生很好",
             "rating": 5,
             "createDate": "2026-01-07 14:05:11"
+        },
+        {
+            "content": "Abbiamo scelto il MaxX per quella che, secondo noi, è la posizione migliore: la camera panoramica permette infatti di ammirare il Bund direttamente dalla vasca da bagno e Pudong dalla camera da letto.  \nA causa di un problema con il riscaldamento, la receptionist Dong ci ha gentilmente trasferiti in una camera più grande (una suite standard), che alla fine abbiamo apprezzato ancora di più.  \nColazione eccellente sia per i piatti cinesi che per quelli internazionali.\n(foto dalla camera)",
+            "rating": 5,
+            "createDate": "2026-01-09 21:07:21"
         },
         {
             "content": "很赞 下次还来",
@@ -2421,21 +2436,6 @@
             "content": "观夜景很漂亮",
             "rating": 5,
             "createDate": "2025-07-31 12:53:33"
-        },
-        {
-            "content": "住的很满意，服务特别好，盼盼给升级了套房，江景视野超棒",
-            "rating": 5,
-            "createDate": "2025-07-29 20:13:59"
-        },
-        {
-            "content": "酒店房间比较舒适，特别是小A的服务，值得夸赞，环境也不错 房间干净卫生入住满意！对了，全景房把外滩景色净收眼底，简直太美了。",
-            "rating": 5,
-            "createDate": "2025-07-29 14:42:21"
-        },
-        {
-            "content": "非常满意，很安静，前台服务热情，有机会还住这里。",
-            "rating": 5,
-            "createDate": "2025-07-29 14:10:18"
         }
     ]
 }

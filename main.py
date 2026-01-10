@@ -1,4 +1,4 @@
-import pipline
+import pipeline
 import playwrightCheck
 import saveInfo
 
@@ -23,9 +23,16 @@ if __name__ == "__main__":
     print("请输入酒店ID：")
     hotel_id = input().strip()
     hotel_name = saveInfo.get_hotel_name(hotel_id)
-    print("请确认酒店ID为：" + hotel_id + ", 酒店名称为：" + hotel_name + "，是否继续？(y/n)")
+
+    print(
+        "请确认酒店ID为："
+        + hotel_id
+        + ", 酒店名称为："
+        + hotel_name
+        + "，是否继续？(y/n)"
+    )
     confirm = input().strip().lower()
     if confirm == "y":
-        pipline.pipline(hotel_id)
+        pipeline.pipeline(hotel_id, save_nums=30, isSimpleRank=True)
     else:
         print("操作已取消。")
