@@ -1,7 +1,7 @@
 import pipeline
 import playwrightCheck
 import saveInfo
-
+import os
 
 if __name__ == "__main__":
     if not playwrightCheck.check_playwright_environment():
@@ -19,6 +19,13 @@ if __name__ == "__main__":
             playwrightCheck.manual_login_procedure()
         else:
             print("⚠️  未登录状态下，部分数据可能无法获取。")
+    # 检查模型路径model/jerry0/m3e-base是否存在，不存在则下载
+    model_path = os.path.join("model", "jerry0", "m3e-base")
+    if not os.path.exists(model_path):
+        print("检测到模型文件缺失，正在下载模型，请稍候...")
+        from downloadModel import download_m3e_model
+        download_m3e_model()
+        print("模型下载完成。")
 
     print("请输入酒店ID：")
     hotel_id = input().strip()

@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.venv/
+venv/
+
+# 模型文件
+model/
+*.safetensors
+*.bin
+*.onnx
+*.h5
+*.pt
+*.pth
+*.pdmodel
+*.pdiparams
+
+# IDE
+.vscode/
+.idea/
+
+# 数据文件（可选）
+hotel_images/
+hotel_infos/
+
+# 系统文件
+.DS_Store
+Thumbs.db
